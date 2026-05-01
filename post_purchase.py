@@ -5,10 +5,11 @@ st.set_page_config(page_title="Order Upload", layout="centered")
 
 st.title("🏠 Custom House Portrait - Upload Details")
 
-# --- URL PARAMS (ključ povezivanja narudžbe) ---
-query_params = st.query_params
-email = query_params.get("email", "unknown")
-order_id = query_params.get("order_id", "no-id")
+# --- URL PARAMS (fix za Streamlit Cloud) ---
+query_params = st.experimental_get_query_params()
+
+email = query_params.get("email", ["unknown"])[0]
+order_id = query_params.get("order_id", ["no-id"])[0]
 
 st.write(f"📧 Email: **{email}**")
 st.write(f"🧾 Order ID: **{order_id}**")
@@ -24,9 +25,10 @@ image = st.file_uploader("Upload house image", type=["png", "jpg", "jpeg"])
 # --- SAVE LOGIC ---
 if st.button("Submit Order Details"):
 
-    if not os.path.exists("orders"):
-        os.makedirs("orders")
+    # napravi glavni folder
+    os.makedirs("orders", exist_ok=True)
 
+    # napravi folder za ovu narudžbu
     folder_name = f"orders/{order_id or email}"
     os.makedirs(folder_name, exist_ok=True)
 
