@@ -6,7 +6,7 @@ st.set_page_config(page_title="Order Upload", layout="centered")
 st.title("🏠 Custom House Portrait - Upload Details")
 
 # --- URL PARAMS (fix za Streamlit Cloud) ---
-query_params = st.experimental_get_query_params()
+query_params = st.query_params
 
 email = query_params.get("email", ["unknown"])[0]
 order_id = query_params.get("order_id", ["no-id"])[0]
