@@ -5,11 +5,18 @@ st.set_page_config(page_title="Order Upload", layout="centered")
 
 st.title("🏠 Custom House Portrait - Upload Details")
 
-# --- URL PARAMS (fix za Streamlit Cloud) ---
+# --- URL PARAMS (NEW STREAMLIT API FIX) ---
 query_params = st.query_params
 
-email = query_params.get("email", ["unknown"])[0]
-order_id = query_params.get("order_id", ["no-id"])[0]
+email = query_params.get("email", "unknown")
+order_id = query_params.get("order_id", "no-id")
+
+# normalize (Streamlit sometimes returns list)
+if isinstance(email, list):
+    email = email[0]
+
+if isinstance(order_id, list):
+    order_id = order_id[0]
 
 st.write(f"📧 Email: **{email}**")
 st.write(f"🧾 Order ID: **{order_id}**")
@@ -25,10 +32,10 @@ image = st.file_uploader("Upload house image", type=["png", "jpg", "jpeg"])
 # --- SAVE LOGIC ---
 if st.button("Submit Order Details"):
 
-    # napravi glavni folder
+    # base folder
     os.makedirs("orders", exist_ok=True)
 
-    # napravi folder za ovu narudžbu
+    # unique folder per order
     folder_name = f"orders/{order_id or email}"
     os.makedirs(folder_name, exist_ok=True)
 
@@ -39,7 +46,7 @@ if st.button("Submit Order Details"):
         "notes": notes
     }
 
-    # save text info
+    # save text data
     with open(f"{folder_name}/data.txt", "w") as f:
         for k, v in data.items():
             f.write(f"{k}: {v}\n")
